@@ -1,0 +1,18 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia
+{% endblock %}
+
+{% block body %}
+    <h1>Query substrings</h1>
+
+    <ul>
+        {% for match in partial_matches %}
+            <li>
+                <a href="{% url 'entry' match %}">{{ match }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
