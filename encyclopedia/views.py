@@ -7,13 +7,22 @@ import random
 from . import util
 
 class NewPageForm(forms.Form):
-    title = forms.CharField(label="Title")
-    markdown = forms.CharField(widget=forms.Textarea, label=("Markdown"))
+    title = forms.CharField(
+        label="Title",
+        widget=forms.TextInput(attrs={'class': 'form-control col-9'})
+        )
+    markdown = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control col-9', 'rows':15})
+        )
 
 
 class EditPageForm(forms.Form):
-    title = forms.CharField(widget=forms.HiddenInput())
-    markdown = forms.CharField(widget=forms.Textarea)
+    title = forms.CharField(
+        widget=forms.HiddenInput()
+        )
+    markdown = forms.CharField(
+        widget=forms.Textarea(attrs={'class':'form-control col-9', 'rows':15})
+        )
     
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -68,9 +77,12 @@ def search(request):
                     "partial_matches":partial_matches
                 })
 
-        # if no matches return to home
+        # if no matches display error message
         else:
-            return HttpResponseRedirect(reverse("index"))
+            return render(request, "encyclopedia/search.html",{
+                    "partial_matches":[],
+                    "error":"No encyclopedia entries inlcude search substring"
+                })
 
 def new_page(request):
     if request.method == "POST":
@@ -110,7 +122,7 @@ def edit_page(request, title):
         form = EditPageForm(request.POST)
         if form.is_valid():
             markdown = form.cleaned_data["markdown"]
-            #determine title form form as not in edit_page when route accessed by post
+            #determine title from form as not in edit_page when route accessed by post
             title = form.cleaned_data["title"]
             util.save_entry(title, markdown)
             print(title)
@@ -124,25 +136,4 @@ def edit_page(request, title):
             "form":form,
             "title":title
         })
-
-
-
-
-        
-
-
-
-            
-        
-                
-            
-    
-        
-
-
-
-
-
-    
-
 
